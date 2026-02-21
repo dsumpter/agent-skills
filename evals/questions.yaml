@@ -1,0 +1,128 @@
+# ============================================================================
+# P&C Insurance Agent Evaluation Questions
+# ============================================================================
+# Questions only – no expected answers. See gold_answers.yaml for scoring.
+# ============================================================================
+
+- id: loss_ratio_ho_2023
+  question: "What is the loss ratio for Homeowners policies with a 2023 effective year?"
+  category: loss_ratio
+  difficulty: easy
+
+- id: loss_ratio_all_2024
+  question: >
+    Across all lines of business, what was the overall loss ratio for
+    policy year 2024?
+  category: loss_ratio
+  difficulty: medium
+
+- id: freq_sev_auto_2022
+  question: >
+    What are the claim frequency and claim severity for Personal Auto
+    in policy year 2022?
+  category: frequency_severity
+  difficulty: easy
+
+- id: pure_premium_auto_2022
+  question: >
+    What is the pure premium for Personal Auto policies written in 2022?
+  category: pure_premium
+  difficulty: easy
+
+- id: avg_premium_by_lob_2023
+  question: >
+    Which line of business had the highest average premium per policy
+    in 2023, and what was the amount?
+  category: average_premium
+  difficulty: medium
+
+- id: total_written_premium_2024
+  question: "What is the total written premium across all lines for policy year 2024?"
+  category: premium
+  difficulty: easy
+
+- id: combined_ratio_wc_2024
+  question: "What is the combined ratio for Workers Compensation in policy year 2024?"
+  category: combined_ratio
+  difficulty: hard
+
+- id: uw_profit_ho_2024
+  question: >
+    What is the underwriting profit (or loss) for Homeowners in policy year 2024?
+    Is this line profitable?
+  category: underwriting_profit
+  difficulty: hard
+
+- id: uw_expense_ratio_cpp_2022
+  question: "What is the underwriting expense ratio for Commercial Package Policy in 2022?"
+  category: expense_ratio
+  difficulty: hard
+
+- id: lae_ratio_ho_2023
+  question: >
+    What is the loss adjustment expense ratio for Homeowners in 2023?
+    Break it down by ALAE and ULAE components.
+  category: lae_ratio
+  difficulty: medium
+
+- id: close_ratio_cgl_2023
+  question: >
+    What was the close ratio (hit ratio) for Commercial General Liability
+    quotes in 2023?
+  category: close_ratio
+  difficulty: easy
+
+- id: close_ratio_trend
+  question: >
+    How has the close ratio trended year-over-year for Personal Auto
+    from 2021 to 2024?
+  category: close_ratio
+  difficulty: medium
+
+- id: retention_ratio_bop
+  question: "What is the retention ratio for Business Owners Policy?"
+  category: retention_ratio
+  difficulty: medium
+
+- id: retention_ratio_comparison
+  question: >
+    Which line of business has the highest retention ratio, and which
+    has the lowest?
+  category: retention_ratio
+  difficulty: medium
+
+- id: claim_count_auto_2023
+  question: >
+    How many claims were reported on Personal Auto policies with a
+    2023 effective year, and what was the total net incurred loss?
+  category: claims
+  difficulty: easy
+
+- id: staging_duplicates
+  question: >
+    We suspect there are duplicate claims in our Guidewire extract.
+    Can you identify them and quantify the impact on reported loss totals?
+  category: data_quality
+  difficulty: hard
+
+- id: staging_premium_formats
+  question: >
+    Our Duck Creek premium feed seems to have formatting issues.
+    Can you diagnose the problem and tell us how many records are affected?
+  category: data_quality
+  difficulty: medium
+
+- id: loss_ratio_vs_close_ratio_2023
+  question: >
+    For policy year 2023, is there a relationship between loss ratio
+    and close ratio across lines of business? Which LOBs have both
+    a high loss ratio and a high close ratio?
+  category: multi_metric
+  difficulty: hard
+
+- id: agent_performance_top5
+  question: >
+    Who are the top 5 agents by total written premium, and what is
+    each one's close ratio and loss experience?
+  category: multi_metric
+  difficulty: hard

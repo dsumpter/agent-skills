@@ -1,0 +1,14 @@
+[project]
+name = "insurance-data"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "duckdb>=1.4.4",
+    "faker>=40.4.0",
+    "pyyaml>=6.0.3",
+]

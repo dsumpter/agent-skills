@@ -1,0 +1,220 @@
+# ============================================================================
+# Gold Answers – Evaluation Harness Only
+# ============================================================================
+# DO NOT show these to the agent-under-test. These are used by run_eval.py
+# to score agent responses against ground truth.
+#
+# TRAPS the agent must navigate:
+#   - core.policies has CDC versioning: must filter is_current_record=TRUE, is_deleted=FALSE
+#   - core.claims has soft deletes: must filter is_deleted=FALSE
+#   - core.claim_transactions has VOID rows: must exclude or net them out
+#   - core.premium_transactions has REVERSAL rows: must exclude is_reversal=TRUE
+#   - Multiple time columns with different semantics (transaction_date vs accounting_date
+#     vs booking_date vs effective_date)
+#   - Staging tables have duplicates, format issues, orphans, case inconsistencies
+#   - mart_executive OBT includes ALL versions + deleted records
+# ============================================================================
+
+- id: loss_ratio_ho_2023
+  gold_query: >
+    SELECT loss_ratio FROM gold_metrics.lob_year_summary
+    WHERE line_of_business = 'HO' AND policy_year = 2023
+  expected_value: 3.795686
+  tolerance: 0.05
+  notes: >
+    Agent must compute net_incurred_loss / earned_premium from core tables.
+    Must filter policies to is_current_record=TRUE, is_deleted=FALSE.
+    Must filter claims to is_deleted=FALSE.
+    Must exclude reversed premium transactions.
+
+- id: loss_ratio_all_2024
+  gold_query: >
+    SELECT ROUND(SUM(net_incurred_loss) / SUM(earned_premium), 6)
+    FROM gold_metrics.lob_year_summary WHERE policy_year = 2024
+  expected_value: 4.44831
+  tolerance: 0.05
+  notes: >
+    Must aggregate across LOBs weighted by earned premium.
+    All the CDC/soft-delete/reversal traps apply.
+
+- id: freq_sev_auto_2022
+  gold_query: >
+    SELECT frequency, severity FROM gold_metrics.lob_year_summary
+    WHERE line_of_business = 'AUTO' AND policy_year = 2022
+  expected_values:
+    frequency: 0.011948
+    severity: 73270.29
+  tolerance: 0.05
+  notes: >
+    Frequency = claim_count / exposure_units.
+    Severity = net_incurred_loss / claim_count.
+    Must use total_exposure_units from current policies.
+
+- id: pure_premium_auto_2022
+  gold_query: >
+    SELECT pure_premium FROM gold_metrics.lob_year_summary
+    WHERE line_of_business = 'AUTO' AND policy_year = 2022
+  expected_value: 875.44
+  tolerance: 0.05
+
+- id: avg_premium_by_lob_2023
+  gold_query: >
+    SELECT line_of_business, average_premium
+    FROM gold_metrics.lob_year_summary
+    WHERE policy_year = 2023
+    ORDER BY average_premium DESC LIMIT 1
+  expected_values:
+    line_of_business: "CGL"
+    average_premium: 12258.66
+  tolerance: 0.05
+  notes: >
+    Average premium = written_premium / policy_count.
+    If agent doesn't filter CDC versions, policy_count inflates and
+    average_premium deflates → wrong answer.
+
+- id: total_written_premium_2024
+  gold_query: >
+    SELECT SUM(written_premium) FROM gold_metrics.lob_year_summary
+    WHERE policy_year = 2024
+  expected_value: 9454947.16
+  tolerance: 0.05
+
+- id: combined_ratio_wc_2024
+  gold_query: >
+    SELECT combined_ratio FROM gold_metrics.underwriting_metrics
+    WHERE line_of_business = 'WC' AND policy_year = 2024
+  expected_value: 5.896475
+  tolerance: 0.10
+  notes: >
+    Combined = loss_ratio + lae_ratio + uw_expense_ratio.
+    UW expense is not in core tables; agent may approximate or
+    acknowledge it cannot fully compute.
+
+- id: uw_profit_ho_2024
+  gold_query: >
+    SELECT underwriting_profit, underwriting_profit_ratio
+    FROM gold_metrics.underwriting_metrics
+    WHERE line_of_business = 'HO' AND policy_year = 2024
+  expected_values:
+    underwriting_profit: -5767005.93
+    underwriting_profit_ratio: -5.594463
+  tolerance: 0.10
+
+- id: uw_expense_ratio_cpp_2022
+  gold_query: >
+    SELECT underwriting_expense_ratio FROM gold_metrics.underwriting_metrics
+    WHERE line_of_business = 'CPP' AND policy_year = 2022
+  expected_value: 0.313641
+  tolerance: 0.15
+
+- id: lae_ratio_ho_2023
+  gold_query: >
+    SELECT lae_ratio, paid_alae, paid_ulae, total_lae, earned_premium
+    FROM gold_metrics.lob_year_summary
+    WHERE line_of_business = 'HO' AND policy_year = 2023
+  expected_value: 1.298688
+  tolerance: 0.05
+  notes: >
+    LAE ratio = (ALAE + ULAE) / earned_premium.
+    Must exclude soft-deleted claims and void claim transactions.
+
+- id: close_ratio_cgl_2023
+  gold_query: >
+    SELECT close_ratio, total_quotes, bound_quotes
+    FROM gold_metrics.quote_bind_metrics
+    WHERE line_of_business = 'CGL' AND quote_year = 2023
+  expected_values:
+    close_ratio: 0.215909
+    total_quotes: 176
+    bound_quotes: 38
+  tolerance: 0.02
+
+- id: close_ratio_trend
+  gold_query: >
+    SELECT quote_year, close_ratio
+    FROM gold_metrics.quote_bind_metrics
+    WHERE line_of_business = 'AUTO'
+      AND quote_year BETWEEN 2021 AND 2024
+    ORDER BY quote_year
+  expected_values_list:
+    - {quote_year: 2021, close_ratio: 0.175325}
+    - {quote_year: 2022, close_ratio: 0.170330}
+    - {quote_year: 2023, close_ratio: 0.184049}
+    - {quote_year: 2024, close_ratio: 0.171053}
+  tolerance: 0.02
+
+- id: retention_ratio_bop
+  gold_query: >
+    SELECT retention_ratio, total_policies, renewal_policies
+    FROM gold_metrics.retention_metrics
+    WHERE line_of_business = 'BOP'
+  expected_values:
+    retention_ratio: 0.285714
+    total_policies: 623
+    renewal_policies: 178
+  tolerance: 0.02
+  notes: >
+    Retention = renewal_policies / total_policies.
+    Renewals: renewal_of_policy_id IS NOT NULL.
+    Must filter is_current_record=TRUE, is_deleted=FALSE or count inflates.
+
+- id: retention_ratio_comparison
+  gold_query: >
+    SELECT line_of_business, retention_ratio
+    FROM gold_metrics.retention_metrics
+    ORDER BY retention_ratio DESC
+  expected_values:
+    highest_lob: "WC"
+    highest_ratio: 0.316140
+    lowest_lob: "FARM"
+    lowest_ratio: 0.276740
+  tolerance: 0.02
+
+- id: claim_count_auto_2023
+  gold_query: >
+    SELECT claim_count, net_incurred_loss
+    FROM gold_metrics.lob_year_summary
+    WHERE line_of_business = 'AUTO' AND policy_year = 2023
+  expected_values:
+    claim_count: 47
+    net_incurred_loss: 3302094.90
+  tolerance: 0.05
+  tolerance_claim_count: exact
+  notes: >
+    Must join claims to current policies, filter deleted claims.
+
+- id: staging_duplicates
+  gold_query: null
+  tolerance: qualitative
+  notes: >
+    staging_guidewire.claim_events uses activity/event pattern. ~8% of
+    events are duplicated from overlapping extract snapshots. Agent must
+    discover this by looking at duplicate claimPublicId + eventType combos.
+    Also case-inconsistent claimState values.
+
+- id: staging_premium_formats
+  gold_query: null
+  tolerance: qualitative
+  notes: >
+    staging_duckcreek.premium_transactions has premium_amt with three formats:
+    plain numbers, $-formatted with commas, and accounting notation (parentheses
+    for negatives). Also txn_dt mixes ISO and MM/DD/YYYY date formats.
+
+- id: loss_ratio_vs_close_ratio_2023
+  gold_query: >
+    SELECT l.line_of_business, l.loss_ratio, q.close_ratio
+    FROM gold_metrics.lob_year_summary l
+    JOIN gold_metrics.quote_bind_metrics q
+      ON l.line_of_business = q.line_of_business
+      AND l.policy_year = q.quote_year
+    WHERE l.policy_year = 2023
+    ORDER BY l.loss_ratio DESC
+  tolerance: 0.05
+
+- id: agent_performance_top5
+  gold_query: null
+  tolerance: qualitative
+  notes: >
+    Must join agents to current policies to claims and quotes.
+    Traps: must filter CDC versions and soft deletes on policies,
+    must filter deleted claims.

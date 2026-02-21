@@ -1,0 +1,20 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# DuckDB binary and archive
+duckdb
+duckdb_cli-linux-amd64.zip
+
+# Generated database (regenerate with: uv run python generate_insurance_data.py)
+insurance_pc.duckdb
+
+# Eval results
+evals/results/
