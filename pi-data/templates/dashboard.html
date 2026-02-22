@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{title}}</title>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  <style>
+    body {
+      font-family: "IBM Plex Sans", sans-serif;
+      margin: 24px;
+      color: #0f172a;
+      background: radial-gradient(circle at top, #f8fafc, #e2e8f0);
+    }
+    .grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    }
+    .layout-vertical .grid {
+      grid-template-columns: 1fr;
+    }
+    .layout-tabs .grid {
+      grid-template-columns: 1fr;
+    }
+    .card {
+      background: #ffffff;
+      padding: 16px;
+      border-radius: 14px;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.1);
+    }
+    .card h2 {
+      margin: 0 0 12px 0;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body class="layout-{{layoutClass}}">
+  <h1>{{title}}</h1>
+  <div class="grid">
+    {{cards}}
+  </div>
+  <script>
+    const specs = {{specs}};
+    specs.forEach((spec) => {
+      vegaEmbed(`#${spec.id}`, spec.spec, { actions: false });
+    });
+  </script>
+</body>
+</html>
