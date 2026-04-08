@@ -20,6 +20,11 @@ Repository for Pi coding agent extensions, skills, themes, commands, references,
 - `pi-themes/tokyonight-storm.json`
 - `experiments/pi-data/`
 
+## Notes
+
+- Skills and themes are auto-loaded through the local Pi package manifest.
+- `pi-extensions/multi-edit.ts` is kept in the repo, but not auto-loaded right now because it conflicts with another installed package that also overrides the `edit` tool.
+
 ## Using this repo with Pi
 
 This repo is set up as a local Pi package via `package.json`.
