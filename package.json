@@ -1,0 +1,33 @@
+{
+  "name": "agent-skills",
+  "version": "0.1.0",
+  "description": "Pi coding agent extensions, skills, themes, and experiments",
+  "type": "module",
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "pi-skill",
+    "pi-theme"
+  ],
+  "pi": {
+    "extensions": [
+      "./pi-extensions"
+    ],
+    "skills": [
+      "./skills"
+    ],
+    "themes": [
+      "./pi-themes"
+    ],
+    "prompts": [
+      "./commands"
+    ]
+  },
+  "dependencies": {
+    "diff": "^8.0.2"
+  },
+  "peerDependencies": {
+    "@mariozechner/pi-coding-agent": "*",
+    "@sinclair/typebox": "*"
+  }
+}
