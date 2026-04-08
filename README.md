@@ -16,14 +16,15 @@ Repository for Pi coding agent extensions, skills, themes, commands, references,
 
 - `skills/modal/`
 - `skills/librarian/`
-- `pi-extensions/multi-edit.ts`
+- `pi-extensions/01-multi-edit.ts`
+- `pi-extensions/02-pi-diff.ts`
 - `pi-themes/tokyonight-storm.json`
 - `experiments/pi-data/`
 
 ## Notes
 
-- Skills and themes are auto-loaded through the local Pi package manifest.
-- `pi-extensions/multi-edit.ts` is kept in the repo, but not auto-loaded right now because it conflicts with another installed package that also overrides the `edit` tool.
+- Skills, themes, and extensions are auto-loaded through the local Pi package manifest.
+- `02-pi-diff.ts` is a vendored copy of `pi-diff`, adjusted so it skips overriding `edit` when `multi-edit` is already loaded.
 
 ## Using this repo with Pi
 

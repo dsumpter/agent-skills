@@ -10,6 +10,10 @@
     "pi-theme"
   ],
   "pi": {
+    "extensions": [
+      "./pi-extensions/01-multi-edit.ts",
+      "./pi-extensions/02-pi-diff.ts"
+    ],
     "skills": [
       "./skills"
     ],
@@ -21,10 +25,12 @@
     ]
   },
   "dependencies": {
+    "@shikijs/cli": "^4.0.2",
     "diff": "^8.0.2"
   },
   "peerDependencies": {
     "@mariozechner/pi-coding-agent": "*",
+    "@mariozechner/pi-tui": "*",
     "@sinclair/typebox": "*"
   }
 }
