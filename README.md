@@ -22,7 +22,9 @@ Repository for Pi coding agent extensions, skills, themes, commands, references,
 
 ### Extensions
 - `pi-extensions/01-multi-edit.ts`
-- `pi-extensions/02-pi-diff.ts`
+
+### Experimental
+- `experiments/02-pi-diff.ts`
 
 ### Themes
 - `pi-themes/tokyonight-storm.json`
@@ -34,12 +36,12 @@ Repository for Pi coding agent extensions, skills, themes, commands, references,
 ## Provenance notes
 
 - `pi-extensions/VENDORED.md` documents vendored extension sources and local modifications.
-- `skills/VENDORED.md` documents copied skill sources and local provenance.
+- `references/skills-vendored.md` documents copied skill sources and local provenance.
 
 ## Notes
 
 - Skills, themes, and extensions are auto-loaded through the local Pi package manifest.
-- `02-pi-diff.ts` is a vendored copy of `pi-diff`, adjusted so it skips overriding `edit` when `multi-edit` is already loaded.
+- `experiments/02-pi-diff.ts` is an experimental vendored copy of `pi-diff`, adjusted so it skips overriding `edit` when `multi-edit` is already loaded.
 - `references/` is for local working copies of upstream repos; actual clones are typically ignored by git.
 
 ## Using this repo with Pi

@@ -11,9 +11,10 @@ This directory contains extensions copied or adapted from upstream projects.
 
 ### Local changes
 
-- Vendored into this repository as `pi-extensions/02-pi-diff.ts`
+- Kept as an experimental copy under `experiments/02-pi-diff.ts`
+- Not loaded by default from the active Pi package
 - Adjusted to skip overriding the `edit` tool when another non-builtin `edit` tool is already registered
-- Intended to coexist with `pi-extensions/01-multi-edit.ts`
+- Intended to coexist with `pi-extensions/01-multi-edit.ts` if re-enabled later
 - Continues to provide the `write` override and diff rendering behavior
 
 ## 01-multi-edit.ts

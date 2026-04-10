@@ -36,6 +36,8 @@ import { extname, relative } from "node:path";
 import { codeToANSI } from "@shikijs/cli";
 import * as Diff from "diff";
 import type { BundledLanguage, BundledTheme } from "shiki";
+import { createEditTool, createWriteTool } from "@mariozechner/pi-coding-agent";
+import { Text } from "@mariozechner/pi-tui";
 
 // ---------------------------------------------------------------------------
 // Diff Theme System — presets, auto-derive, and per-color overrides
@@ -1305,17 +1307,6 @@ export default function diffRendererExtension(pi: any): void {
 	// Apply diff theme palette from settings/presets before rendering
 	applyDiffPalette();
 
-	let createWriteTool: any, createEditTool: any, TextComponent: any;
-	try {
-		const sdk = require("@mariozechner/pi-coding-agent");
-		createWriteTool = sdk.createWriteTool;
-		createEditTool = sdk.createEditTool;
-		TextComponent = require("@mariozechner/pi-tui").Text;
-	} catch {
-		return;
-	}
-	if (!createWriteTool || !createEditTool || !TextComponent) return;
-
 	const cwd = process.cwd();
 	const home = process.env.HOME ?? "";
 	const sp = (p: string) => shortPath(cwd, home, p);
@@ -1360,7 +1351,7 @@ export default function diffRendererExtension(pi: any): void {
 			const fp = args?.path ?? args?.file_path ?? "";
 			const isNew = !fp || !existsSync(fp);
 			const label = isNew ? "create" : "write";
-			const text = ctx.lastComponent ?? new TextComponent("", 0, 0);
+			const text = ctx.lastComponent ?? new Text("", 0, 0);
 			const hdr = `${theme.fg("toolTitle", theme.bold(label))} ${theme.fg("accent", sp(fp))}`;
 
 			// Streaming
@@ -1399,7 +1390,7 @@ export default function diffRendererExtension(pi: any): void {
 		},
 
 		renderResult(result: any, _opt: any, theme: any, ctx: any) {
-			const text = ctx.lastComponent ?? new TextComponent("", 0, 0);
+			const text = ctx.lastComponent ?? new Text("", 0, 0);
 			if (ctx.isError) {
 				const e =
 					result.content
@@ -1470,8 +1461,8 @@ export default function diffRendererExtension(pi: any): void {
 	// edit
 	// =======================================================================
 
-	const existingEditTool = typeof pi.getAllTools === "function" ? pi.getAllTools().find((tool: any) => tool.name === "edit") : undefined;
-	const shouldOverrideEdit = !existingEditTool || existingEditTool.sourceInfo?.source === "builtin";
+	const multiEditState = (pi as any).__agentSkills;
+	const shouldOverrideEdit = !multiEditState?.multiEditActive;
 
 	const origEdit = createEditTool(cwd);
 
@@ -1546,7 +1537,7 @@ export default function diffRendererExtension(pi: any): void {
 			renderCall(args: any, theme: any, ctx: any) {
 				const fp = args?.path ?? args?.file_path ?? "";
 				const operations = getEditOperations(args);
-				const text = ctx.lastComponent ?? new TextComponent("", 0, 0);
+				const text = ctx.lastComponent ?? new Text("", 0, 0);
 				const hdr = `${theme.fg("toolTitle", theme.bold("edit"))} ${theme.fg("accent", sp(fp))}`;
 
 				if (!(ctx.argsComplete && operations.length > 0)) {
@@ -1605,7 +1596,7 @@ export default function diffRendererExtension(pi: any): void {
 			},
 
 			renderResult(result: any, _opt: any, theme: any, ctx: any) {
-				const text = ctx.lastComponent ?? new TextComponent("", 0, 0);
+			const text = ctx.lastComponent ?? new Text("", 0, 0);
 				if (ctx.isError) {
 					const e =
 						result.content

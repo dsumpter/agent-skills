@@ -11,8 +11,7 @@
   ],
   "pi": {
     "extensions": [
-      "./pi-extensions/01-multi-edit.ts",
-      "./pi-extensions/02-pi-diff.ts"
+      "./pi-extensions/01-multi-edit.ts"
     ],
     "skills": [
       "./skills"

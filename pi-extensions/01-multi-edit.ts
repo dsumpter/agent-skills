@@ -721,6 +721,9 @@ async function applyClassicEdits(
 }
 
 export default function (pi: ExtensionAPI) {
+	const state = ((pi as any).__agentSkills ??= {});
+	state.multiEditActive = true;
+
 	pi.registerTool({
 		name: "edit",
 		label: "edit",
