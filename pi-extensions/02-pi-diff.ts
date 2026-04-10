@@ -1,6 +1,15 @@
 /**
  * pi-diff — Shiki-powered terminal diff renderer for pi.
  *
+ * Vendored into this repo from:
+ *   https://github.com/buddingnewinsights/pi-diff
+ * Original package:
+ *   @heyhuynhgiabuu/pi-diff
+ *
+ * Local modification:
+ *   Skip overriding the `edit` tool when another non-builtin `edit` tool
+ *   (for example `01-multi-edit.ts`) is already registered.
+ *
  * @module pi-diff
  * @see https://github.com/buddingnewinsights/pi-diff
  *
