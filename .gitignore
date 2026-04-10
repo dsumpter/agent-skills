@@ -16,11 +16,11 @@ node_modules/
 duckdb
 duckdb_cli-linux-amd64.zip
 
-# Generated database (regenerate with: uv run python generate_insurance_data.py)
+# Generated database (regenerate with: uv run python experiments/insurance-evals/generate_insurance_data.py)
 insurance_pc.duckdb
 
 # Eval results
-evals/results/
+experiments/insurance-evals/evals/results/
 
 # Local reference clones
 references/*/

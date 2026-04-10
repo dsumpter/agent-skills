@@ -10,10 +10,10 @@ Workflow:
   5. Produce a scorecard
 
 Usage:
-    uv run python evals/run_eval.py                    # run all questions
-    uv run python evals/run_eval.py --ids loss_ratio_ho_2023 freq_sev_auto_2022
-    uv run python evals/run_eval.py --category loss_ratio
-    uv run python evals/run_eval.py --difficulty easy
+    uv run python experiments/insurance-evals/evals/run_eval.py                    # run all questions
+    uv run python experiments/insurance-evals/evals/run_eval.py --ids loss_ratio_ho_2023 freq_sev_auto_2022
+    uv run python experiments/insurance-evals/evals/run_eval.py --category loss_ratio
+    uv run python experiments/insurance-evals/evals/run_eval.py --difficulty easy
 """
 
 import argparse

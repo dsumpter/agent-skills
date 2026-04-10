@@ -12,8 +12,7 @@ Repository for Pi coding agent extensions, skills, themes, commands, references,
 
 ### Supporting content
 - `references/` – upstream repos cloned locally for inspiration/adaptation
-- `experiments/` – exploratory or archived work
-- `evals/` – insurance analytics evaluation harness
+- `experiments/` – exploratory or archived work, including the insurance analytics eval harness
 
 ## Current active assets
 
@@ -30,6 +29,7 @@ Repository for Pi coding agent extensions, skills, themes, commands, references,
 
 ### Experiments
 - `experiments/pi-data/`
+- `experiments/insurance-evals/`
 
 ## Provenance notes
 
