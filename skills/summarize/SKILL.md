@@ -44,7 +44,7 @@ Or:
 markit --quiet --output /tmp/doc.md <url-or-path>
 ```
 
-### Convert + summarize with haiku-4-5
+### Convert + summarize with GLM-5 FP8
 
 Summaries work best when you provide **what you want extracted** and the **audience/purpose**.
 
@@ -61,4 +61,4 @@ node to-markdown.mjs <url-or-path> --summary --prompt "Focus on security implica
 This will:
 1. convert to Markdown via `markit --quiet`
 2. write the full Markdown to a temp `.md` file and print its path as a hint
-3. run `pi --model claude-haiku-4-5` (no-tools, no-session) to summarize using your extra prompt
+3. run `pi --provider modal-zai --model zai-org/GLM-5-FP8` (no-tools, no-session) to summarize using your extra prompt
