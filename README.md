@@ -17,6 +17,7 @@ Repository for Pi coding agent extensions, skills, themes, commands, references,
 ## Current active assets
 
 ### Skills
+- `skills/dev-browser/`
 - `skills/modal/`
 - `skills/librarian/`
 
