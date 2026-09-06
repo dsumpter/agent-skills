@@ -5,6 +5,12 @@
  *
  * Usage:
  *   node to-markdown.mjs <url-or-path> [--out <file>] [--tmp] [--summary [prompt]] [--prompt <prompt>]
+ *
+ * Examples:
+ *   node to-markdown.mjs https://example.com
+ *   node to-markdown.mjs ./spec.pdf --tmp
+ *   node to-markdown.mjs ./spec.pdf --summary "Summarize security requirements."
+ *   node to-markdown.mjs ./spec.pdf --summary --prompt "Extract API endpoints."
  */
 
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
@@ -53,6 +59,7 @@ function makeTmpMdPath(input) {
   return join(dir, `${base}-${stamp}-${rand}.md`);
 }
 
+// --- args parsing ---
 let input = null;
 let outPath = null;
 let writeTmp = false;
@@ -104,11 +111,14 @@ for (let i = 0; i < argv.length; i++) {
 
   if (!input) {
     input = a;
-  } else if (doSummary && summaryPrompt == null) {
-    summaryPrompt = a;
   } else {
-    console.error(`Unexpected argument: ${a}`);
-    usageAndExit(1);
+    // An extra bare argument is a summary prompt when --summary was enabled.
+    if (doSummary && summaryPrompt == null) {
+      summaryPrompt = a;
+    } else {
+      console.error(`Unexpected argument: ${a}`);
+      usageAndExit(1);
+    }
   }
 }
 
@@ -135,6 +145,7 @@ function summarizeWithPi(markdown, { mdPathForNote = null, extraPrompt = null } 
   let truncated = false;
   let body = markdown;
   if (body.length > MAX_CHARS) {
+    // Keep the start and end so summaries retain context and conclusions.
     const head = body.slice(0, 110_000);
     const tail = body.slice(-20_000);
     body = `${head}\n\n[...TRUNCATED ${body.length - (head.length + tail.length)} chars...]\n\n${tail}`;
@@ -162,10 +173,17 @@ ${truncNote}
 ${body}
 --- END DOCUMENT ---`;
 
+  // Use pi as a headless, isolated summarizer. Disable discovered resources so
+  // project/user skills and extensions cannot alter the prompt or run side effects.
   const result = spawnSync('pi', [
-    '--provider', 'modal-zai',
-    '--model', 'zai-org/GLM-5-FP8',
+    '--provider', 'openrouter',
+    '--model', 'thinkingmachines/inkling:free',
     '--no-tools',
+    '--no-extensions',
+    '--no-skills',
+    '--no-prompt-templates',
+    '--no-themes',
+    '--no-context-files',
     '--no-session',
     '-p',
     prompt
@@ -196,15 +214,19 @@ async function main() {
     writeFileSync(outPath, md, 'utf-8');
   }
 
+  // Summaries always get a unique temp Markdown file; --tmp requests one too.
   let tmpMdPath = null;
   if (writeTmp || doSummary) {
     tmpMdPath = makeTmpMdPath(input);
     writeFileSync(tmpMdPath, md, 'utf-8');
   }
 
-  if (writeTmp && tmpMdPath && !doSummary && !outPath) {
-    console.log(tmpMdPath);
-    return;
+  if (writeTmp && tmpMdPath) {
+    // With only --tmp, print the path instead of streaming the document.
+    if (!doSummary && !outPath) {
+      console.log(tmpMdPath);
+      return;
+    }
   }
 
   if (doSummary) {
